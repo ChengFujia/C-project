@@ -3,13 +3,13 @@
 #include <sstream>
 using namespace std;
 
-struct Path
+struct Path			//存储一条路径
 {
-	int fromID;
-	int toID;
-	int distance;
+	int fromID;		//地点a,不区分起点终点
+	int toID;		//地点b,不区分起点终点
+	int distance;	//两点间距离
 
-	Path(int a ,int b ,int c)
+	Path(int a ,int b ,int c)	//显示构造函数
 	{
 		fromID = a;
 		toID = b;
@@ -19,6 +19,7 @@ struct Path
 
 int match(Path a,int b)	//指令中的路径是双向路径，不区分from和to
 {
+	//若匹配，返回另一个地点；否则，返回0
 	if(b==a.fromID)
 		return a.toID;
 	else if( b==a.toID)
@@ -27,7 +28,7 @@ int match(Path a,int b)	//指令中的路径是双向路径，不区分from和to
 		return 0;
 }
 
-bool isInSet(vector<int> goStraightCity,int cityNumber)
+bool isInSet(vector<int> goStraightCity,int cityNumber)		//查看某城市的最短距离是否已经计算完成，1done，0not
 {
 	for(int i=0;i<goStraightCity.size();i++)
 	{
@@ -48,7 +49,6 @@ int handler(vector<Path> map,int numCity,int numPath)
 	{
 		if(match(map[j],1))
 		{
-			cout << "匹配的记录："<< match(map[j],1) << endl;
 			handlerPathSet.push_back(map[j]);
 			sDistanceSet.push_back(map[j]);
 			goStraightCity.push_back(match(map[j],1));
@@ -57,12 +57,12 @@ int handler(vector<Path> map,int numCity,int numPath)
 	
 	for(int i=2;i<=numCity;i++)		//第二遍处理非直达的,倒序处理
 	{
-		if(!isInSet(goStraightCity,i))
+		if(!isInSet(goStraightCity,i))		//从[2，numCity]中删选还没有计算的i
 		{
 			int tempdistance=1001;
 			int tempID = 0;
 			int tempCity = 0;
-			for(int j=0;j<numPath;j++)
+			for(int j=0;j<numPath;j++)		//从map中寻找带有i的路径
 			{
 				if(match(map[j],i) && isInSet(goStraightCity ,match(map[j],i)))
 				{
