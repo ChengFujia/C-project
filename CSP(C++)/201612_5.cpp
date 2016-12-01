@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <algorithm>
 using namespace std;
 
 struct Points
@@ -13,6 +14,11 @@ struct Points
 		list = list1;
 	}
 };
+
+bool compare(Points a,Points b)
+{
+	return a.list.size() < b.list.size();
+}
 
 int findLoc(int a,vector<Points> b)
 {
@@ -30,16 +36,9 @@ int num,mode;
 
 int readAndHandle()
 {
-	ifstream input("demo.txt");
-	input >> num >> mode;
-
-	//测试是否读入
-	if(mode == 1)
-		cout << "输出最大结界数"<<endl;
-	else if(mode == 2)
-		cout << "输出最佳方案数"<<endl;
-	else
-		cout << "错误模式，请重新输入："<<endl;
+	//ifstream input("demo.txt");
+	//input >> num >> mode;
+	cin >> num >> mode;
 
 	int count=0;
 	int x0,y0;
@@ -48,7 +47,8 @@ int readAndHandle()
 	{
 		vector<int> temp_lists_x;
 		vector<int> temp_lists_y;
-		input >> x0 >> y0;
+		//input >> x0 >> y0;
+		cin >> x0 >> y0;
 		if(x.size()==0||findLoc(x0,x)==-1)
 		{
 			temp_lists_x.push_back(y0);
@@ -73,7 +73,69 @@ int readAndHandle()
 int main()
 {
 	readAndHandle();
-	
+
+	int x_size = x.size();
+	int y_size = y.size();
+	for(int a=0;a<x_size-1;a++)
+		sort(x[a].list.begin(),x[a].list.end());
+	for(int b=0;b<y_size-1;b++)
+		sort(y[b].list.begin(),y[b].list.end());
+	sort(x.begin(),x.end(),compare);
+	sort(y.begin(),y.end(),compare);
+
+	int numOfNet =0;
+	int numOfNetest = 0;
+	vector<int> numOfPoint(100,0);
+
+	for(int i=x_size-1;i>=0;i--)
+	{
+		Points x_temp = Points(x[i].same,x[i].list);
+		int len_x_temp = x_temp.list.size();
+		if (len_x_temp < 2*numOfNetest)
+			break;
+		for(int j=y_size-1;j>=0;j--)
+		{
+			Points y_temp = Points(y[j].same,y[j].list);
+			int len_y_temp = y_temp.list.size();
+			if (len_y_temp < 2*numOfNetest)
+				break;
+			if(x_temp.same <= y_temp.list[0] || x_temp.same >= y_temp.list[len_y_temp-1])
+					continue;
+			else
+			{
+				for(int k=0;k<len_y_temp-1;k++)
+				{
+					//不一定非要前少后多，反过来也可以
+					if(x_temp.same>y_temp.list[k] && x_temp.same<y_temp.list[k+1])
+					{
+						numOfNet = len_y_temp-1-k>=k+1 ? k+1 :len_y_temp-1-k ;
+						break;
+					}
+				}
+
+				if(y_temp.same <= x_temp.list[0] || y_temp.same >= x_temp.list[len_x_temp-1] || numOfNet < numOfNetest)
+					continue;
+				else
+				{
+					for(int k=0;k<len_x_temp-1;k++)
+					{
+						if(y_temp.same>x_temp.list[k] && y_temp.same<x_temp.list[k+1])
+						{
+							int temp = len_y_temp-1-k>=k+1 ? k+1 :len_y_temp-1-k ;
+							numOfNet = temp<numOfNet ? temp : numOfNet;
+							numOfNetest = numOfNetest<numOfNet ? numOfNet : numOfNetest;
+							numOfPoint[numOfNetest]++;
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+	if (mode==1)
+		cout << numOfNetest << endl;
+	if (mode==2)
+		cout << numOfPoint[numOfNetest] << endl;
 	/*
 	cout << "x = " << endl;
 	for(int i=0;i<x.size();i++)
@@ -93,7 +155,5 @@ int main()
 		cout << endl;
 	}
 	*/
-	
-
 	return 0;
 }
