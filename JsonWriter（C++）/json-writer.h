@@ -106,6 +106,7 @@ public:
 	//因内部操作不同泛型解决不了，可以利用重载
     void Value (const char *value);
     void Value (std::string value);
+	void Value (bool value);
 
 	//定义泛型 -- 保证Value函数可以读入 不只是 int的值，节省的代码量
 	#define VALUE_DEF(t)  void Value(t value) { StartChild(); Write() << value; }
@@ -163,6 +164,6 @@ private:
 
 	std::stack<Container *> depth;
 	void Indent();	
-}
+};
 #endif /*_JSONWRITER_H*/
 
