@@ -4,6 +4,7 @@ using namespace std;
 //结合缩进来提升可读性 stack -- 同一深度缩进相同的空格
 void JsonWriter::Indent()
 {
+	//每一层是两个空格的缩进
 	for(int i=0,s=initialIndentDepth+depth.size();i<s;i++)
 		Write() << indent;
 }
@@ -22,6 +23,7 @@ void JsonWriter::StartContainer(ContainerType type,ContainerLayout layout)
 	}
 
 	StartChild();
+	//新建一个Container
 	depth.push(new Container(type,layout));
 	Write() << (type == CONTAINER_TYPE_OBJECT ? '{' : '[');
 }
@@ -71,6 +73,7 @@ void JsonWriter::StartChild(bool isKey)
 			Indent();
 		}
 	}
+	//如果没元素，连间隔符号都能省去
 	else if(container->childCount == 0)
 	{
 		Write() << containerPadding;

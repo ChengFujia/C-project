@@ -166,4 +166,3 @@ private:
 	void Indent();	
 };
 #endif /*_JSONWRITER_H*/
-
