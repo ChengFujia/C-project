@@ -33,7 +33,7 @@ $(objects):%.o:%.c
 # v1.5 
 .PHONY: clean
 clean:
-	$(RM) $(executbale) $(objects)
+	 $(executbale) $(objects)
 
 
 

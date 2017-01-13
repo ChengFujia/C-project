@@ -1,4 +1,3 @@
-
 // main.c
 #include <stdio.h>
 #include "complicated.h"
@@ -8,3 +7,4 @@ int main()
     complicated();
     return 0;
 }
+
