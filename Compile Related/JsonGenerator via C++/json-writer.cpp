@@ -1,15 +1,16 @@
 #include "json-writer.h"
 using namespace std;
 
-//��������������ɶ��� stack -- ͬһ���������ͬ�Ŀո�
+// 用c++编写一个json生成器
+//½áºÏËõ½øÀ´ÌáÉý¿É¶ÁÐÔ stack -- Í¬Ò»Éî¶ÈËõ½øÏàÍ¬µÄ¿Õ¸ñ
 void JsonWriter::Indent()
 {
-	//ÿһ���������ո������
+	//Ã¿Ò»²ãÊÇÁ½¸ö¿Õ¸ñµÄËõ½ø
 	for(int i=0,s=initialIndentDepth+depth.size();i<s;i++)
 		Write() << indent;
 }
 
-//Ԫ�صĿ�ʼ�ͽ�������Ҫ�������������ֱ�ΪStartContainer �� EndContainer,Container��ָ�����������
+//ÔªËØµÄ¿ªÊ¼ºÍ½áÊø¶¼ÐèÒªº¯ÊýÀ´²Ù×÷£¬·Ö±ðÎªStartContainer ºÍ EndContainer,ContainerÊÇÖ¸¶ÔÏó»òÕßÊý×é
 void JsonWriter::StartContainer(ContainerType type,ContainerLayout layout)
 {
 	if(forceDefaultContainerLayout)
@@ -23,7 +24,7 @@ void JsonWriter::StartContainer(ContainerType type,ContainerLayout layout)
 	}
 
 	StartChild();
-	//�½�һ��Container
+	//ÐÂ½¨Ò»¸öContainer
 	depth.push(new Container(type,layout));
 	Write() << (type == CONTAINER_TYPE_OBJECT ? '{' : '[');
 }
@@ -46,11 +47,11 @@ void JsonWriter::EndContainer()
 	delete container;
 }
 
-//��������Ҫһ����ʼ��ʶ�ͽ�����ʶ�������涨ִ�е�����
-//StartChild��Ҫ��� ���� + Ԫ�� + ��ֵ �������ͱ����� ����
+//ÈÝÆ÷ÖÐÐèÒªÒ»¸ö¿ªÊ¼±êÊ¶ºÍ½áÊø±êÊ¶£¬ÓÃÀ´¹æ¶¨Ö´ÐÐµÄÁ÷³Ì
+//StartChildÖ÷ÒªÕë¶Ô ¶ÔÏó + ÔªËØ + ¼üÖµ µÄËõ½øºÍ±êµã·ûºÅ ÎÊÌâ
 void JsonWriter::StartChild(bool isKey)
 {
-	//������Ϊ0��˵���Ǹ��ڵ㣬ֻ�ÿ��������ͺ�
+	//Èç¹ûÉî¶ÈÎª0£¬ËµÃ÷ÊÇ¸ù½Úµã£¬Ö»ÓÃ¿¼ÂÇËõ½ø¾ÍºÃ
 	if(depth.size() == 0)
 	{
 		if(initialIndentDepth >0)
@@ -58,13 +59,13 @@ void JsonWriter::StartChild(bool isKey)
 		return ;
 	}
 
-	//������ӽڵ㣬��Ҫ��������
+	//Èç¹ûÊÇ×Ó½Úµã£¬ÐèÒªÇø·ÖÀàÐÍ
 	Container *container = depth.top();
-	//��������е�Ԫ�أ�������ֵ�� ���� �Ƕ����е�ֵ ���������һ������������������ֵ
+	//Õë¶ÔÊý×éÖÐµÄÔªËØ£¨¶¼ÊÇÊýÖµ£© »òÕß ÊÇ¶ÔÏóÖÐµÄÖµ £¬Á¬×ÅÊä³öÒ»¸ö¡®£¬¡¯£¬ÓÃÀ´Çø·ÖÖµ
 	if(container->childCount >0 && (container->type == CONTAINER_TYPE_ARRAY || (container->type == CONTAINER_TYPE_OBJECT && !container->isKey)))
 	{
 		Write() << ",";
-		//���в��� �� ���в��ֵ��������ڻ��к�����
+		//µ¥ÐÐ²¼¾Ö Óë ¶àÐÐ²¼¾ÖµÄÇø±ðÔÚÓÚ»»ÐÐºÍËõ½ø
 		if(container->layout == CONTAINER_LAYOUT_SINGLE_LINE)
 			Write() << containerPadding;
 		else
@@ -73,7 +74,7 @@ void JsonWriter::StartChild(bool isKey)
 			Indent();
 		}
 	}
-	//���ûԪ�أ���������Ŷ���ʡȥ
+	//Èç¹ûÃ»ÔªËØ£¬Á¬¼ä¸ô·ûºÅ¶¼ÄÜÊ¡È¥
 	else if(container->childCount == 0)
 	{
 		Write() << containerPadding;
@@ -88,7 +89,7 @@ void JsonWriter::StartChild(bool isKey)
 	container->childCount++;
 }
 
-//�������ַ���ʱ�����ʱû��˫���ţ������ϱ�׼��������Ҫ�ֶ���������ͬ���������ֵ�� Ԫ�أ�
+//µ±Ìí¼Ó×Ö·û´®Ê±£¬Êä³öÊ±Ã»ÓÐË«ÒýºÅ£¬²»·ûºÏ±ê×¼£¬ËùÒÔÐèÒªÊÖ¶¯´¦Àí£¨²»Í¬ÓÚÉÏÃæµÄÊýÖµÀà ÔªËØ£©
 void JsonWriter::WriteString(const char *str)
 {
 	Write() << "\"";
@@ -97,7 +98,7 @@ void JsonWriter::WriteString(const char *str)
 	Write() << "\"";
 }
 
-//����ת���ַ�,ÿ���ַ� ���ַ������
+//´¦Àí×ªÒå×Ö·û,Ã¿¸ö×Ö·û ÓÃ×Ö·û´®Êä³ö
 void JsonWriter::WriteEscapedChar(char c)
 {
 	switch(c)
@@ -113,7 +114,7 @@ void JsonWriter::WriteEscapedChar(char c)
 	}
 }
 
-//��һ��ʹ�õ�value()���� �Լ�key() NullValue()
+//ÉÏÒ»½ÚÊ¹ÓÃµÄvalue()º¯Êý ÒÔ¼°key() NullValue()
 void JsonWriter::Value(const char* value)
 {
 	StartChild();
