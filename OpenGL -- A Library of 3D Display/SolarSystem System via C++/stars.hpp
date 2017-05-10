@@ -25,7 +25,7 @@ class Planet : public Star
 {
 	public:
 		Planet(GLfloat radius,GLfloat distance,GLfloat speed,
-				GLfloat selfSpeed,Star* parent,GLfloat rgbaColor[3]); // 构造函数
+				GLfloat selfSpeed,Star* parent,GLfloat rgbColor[3]); // 构造函数
 		void drawPlanet();			// 增加对具备自身材质的行星绘制材质
 		virtual void draw() {drawPlanet();drawStar();}	// 继续向子类开放重写功能
 };
@@ -34,7 +34,7 @@ class LightPlanet : public Planet
 {
 	public:
 		LightPlanet(GLfloat radius,GLfloat distance,GLfloat speed,
-				GLfloat selfSpeed,Star* parent,GLfloat rgbaColor[]); // 构造函数
+				GLfloat selfSpeed,Star* parent,GLfloat rgbColor[]); // 构造函数
 		void drawLight();			// 增加对提供光源的恒星绘制光照
 		virtual void draw() {drawLight();drawPlanet();drawStar();}
 };
